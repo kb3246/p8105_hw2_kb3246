@@ -14,6 +14,8 @@ library(skimr)
 
 # Problem 1
 
+### Importing, cleaning and making changes 
+
 First we read and clean the NYC Transit Subway dataset. Then we want to retain specific variables and convert specific variables as stated in the problem. To that extent, we retain line, station, name, station latitude / longitude, routes served, entry, vending, entrance type, and ADA compliance. Further, we convert the entry variable from character (YES vs NO) to a logical variable. 
 
 ```{r}
@@ -29,6 +31,8 @@ trans_ent =
   mutate(entry = ifelse(entry == "YES", TRUE, FALSE))
 ```
 
+### Summary of dataset 
+
 Here's a summary of the dataset: 
 `r skim(trans_ent)`
 - It consists of `r nrow(trans_ent)` rows and `r ncol(trans_ent)` columns. 
@@ -39,6 +43,8 @@ Here's a summary of the dataset:
 
 - The dataset above is not tidy. We want to make sure to condense route variables to a single variable called route with the lines as entries under it. That is, to obtain a tidy dataset we would need to convert `route` variables from wide to long format. 
 
+### To obtain number of distinct stations
+
 The following code chunk selects station name and line, and then uses `distinct()` to obtain all unique combinations. As a result, the number of rows in this dataset is the number of unique stations.
 
 ```{r}
@@ -48,6 +54,8 @@ trans_ent %>%
 ```
 - Therefore, there are 84 distinct stations. 
 
+### To obtain number of ADA compliant stations
+
 The next code chunk is similar, but filters according to ADA compliance as an initial step. This produces a dataframe in which the number of rows is the number of ADA compliant stations. 
 
 ```{r}
@@ -56,7 +64,9 @@ trans_ent %>%
   select(station_name, line) %>% 
   distinct
 ```
-- Therefore, the number of stations that are ADA complian are 84. 
+- Therefore, the number of stations that are ADA compliant are 84. 
+
+### To compute the proprtion 
 
 To compute the proportion of station entrances / exits without vending allow entrance, we first exclude station entrances that do not allow vending. Then, we focus on the `entry` variable -- this logical, so taking the mean will produce the desired proportion (recall that R will coerce logical to numeric in cases like this).
 
@@ -68,6 +78,8 @@ trans_ent %>%
 ```
 
 - Therefore, the proportion of station entrances / exits without vending allow entrance is 0.377. 
+
+### A tratin stations that are ADA compliant 
 
 Lastly, we write a code chunk to identify stations that serve the A train, and to assess how many of these are ADA compliant. As a first step, we tidy the data as alluded to previously; that is, we convert `route` from wide to long format. After this step, we can use tools from previous parts of the question (filtering to focus on the A train, and on ADA compliance; selecting and using `distinct` to obtain dataframes with the required stations in rows).
 
@@ -95,12 +107,16 @@ trans_ent %>%
 
 # Problem 2
 
+### Reading and cleaning Mr. Trash Wheel 
+
 We want to read and clean the Mr. Trash Wheel dataset:  
 ```{r Mr. Trash Wheel}
 mr_trash_wheel = read_excel("Data/Trash Wheel Collection Data.xlsx", sheet = 1, range = "A2:N549") %>%
   janitor::clean_names()%>%
   mutate(sports_balls = as.integer(sports_balls), wheel = "mr")
 ```
+
+### Reading and cleaning Prof. Trash Wheel 
 
 We want to read and clean the Prof. Trash Wheel dataset: 
 
@@ -110,6 +126,8 @@ prof_trash_wheel = read_excel("Data/Trash Wheel Collection Data.xlsx", sheet = 2
   mutate(year = as.character(year), wheel = "prof")
 ```
 
+### Combining the datasets
+
 Now we want to combine the two datasets: 
 
 ```{r Combined Trash Wheel}
@@ -117,6 +135,7 @@ combined_trash_wheel = bind_rows(mr_trash_wheel, prof_trash_wheel) %>%
   janitor::clean_names()
 ```
 
+### Summary of the datatsets 
 Here is a description of my combined dataset: 
 
 `r skim(combined_trash_wheel)`
@@ -128,3 +147,5 @@ Here is a description of my combined dataset:
 - The total weight of trash collected by Professor Trash Wheel is `r sum(prof_trash_wheel$weight_tons, na.rm = TRUE)`tons
 
 - The total number of sports balls collected by Mr. Trash Wheel in 2020 was `r sum(combined_trash_wheel[which(combined_trash_wheel$year =="2020" & combined_trash_wheel$wheel =="mr"), "sports_balls"])`
+
+# Problem 3
