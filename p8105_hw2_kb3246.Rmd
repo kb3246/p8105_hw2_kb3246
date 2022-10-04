@@ -1,0 +1,49 @@
+---
+title: "Data Science HW-2"
+author: "Kasturi Bhamidipati"
+date: "2022-10-02"
+output: github_document
+---
+
+First we load the libraries that we need! 
+```{r load pacakges}
+library(tidyverse)
+library(readxl)
+library(skimr)
+```
+
+# Problem 2
+
+We want to read and clean the Mr. Trash Wheel dataset:  
+```{r Mr. Trash Wheel}
+mr_trash_wheel = read_excel("Data/Trash Wheel Collection Data.xlsx", sheet = 1, range = "A2:N549") %>%
+  janitor::clean_names()%>%
+  mutate(sports_balls = as.integer(sports_balls), wheel = "mr")
+```
+
+We want to read and clean the Prof. Trash Wheel dataset: 
+
+```{r Prof. Trash Wheel}
+prof_trash_wheel = read_excel("Data/Trash Wheel Collection Data.xlsx", sheet = 2, range = "A2:M96") %>%
+  janitor::clean_names()%>%
+  mutate(year = as.character(year), wheel = "prof")
+```
+
+Now we want to combine the two datasets: 
+
+```{r Combined Trash Wheel}
+combined_trash_wheel = bind_rows(mr_trash_wheel, prof_trash_wheel) %>%
+  janitor::clean_names()
+```
+
+Here is a description of my combined dataset: 
+
+`r skim(combined_trash_wheel)`
+
+- The total number of rows are `r nrow(combined_trash_wheel)` and number of variables are `r ncol(combined_trash_wheel)`
+
+- There are three character variables, eleven numeric variables and one POSIXct variable which is for the date. 
+
+- The total weight of trash collected by Professor Trash Wheel is `r sum(prof_trash_wheel$weight_tons, na.rm = TRUE)`tons
+
+- The total number of sports balls collected by Mr. Trash Wheel in 2020 was `r sum(combined_trash_wheel[which(combined_trash_wheel$year =="2020" & combined_trash_wheel$wheel =="mr"), "sports_balls"])`
