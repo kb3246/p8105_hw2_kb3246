@@ -12,6 +12,87 @@ library(readxl)
 library(skimr)
 ```
 
+# Problem 1
+
+First we read and clean the NYC Transit Subway dataset. Then we want to retain specific variables and convert specific variables as stated in the problem. To that extent, we retain line, station, name, station latitude / longitude, routes served, entry, vending, entrance type, and ADA compliance. Further, we convert the entry variable from character (YES vs NO) to a logical variable. 
+
+```{r}
+trans_ent = 
+  read_csv(
+    "data/NYC_Transit_Subway_Entrance_And_Exit_Data.csv",
+    col_types = cols(Route8 = "c", Route9 = "c", Route10 = "c", Route11 = "c")) %>% 
+  janitor::clean_names() %>% 
+  select(
+    line, station_name, station_latitude, station_longitude, 
+    starts_with("route"), entry, exit_only, vending, entrance_type, 
+    ada) %>% 
+  mutate(entry = ifelse(entry == "YES", TRUE, FALSE))
+```
+
+Here's a summary of the dataset: 
+`r skim(trans_ent)`
+- It consists of `r nrow(trans_ent)` rows and `r ncol(trans_ent)` columns. 
+
+- The dataset has 16 character variables, 2 logical variables and 2 numeric variables. 
+
+- Each route in this datatset is represented as a separate variable. It includes other variables such as line, station name, presence of exits, presence of entrance, entrance type, ADA compliance, and if the station has a vending machine. 
+
+- The dataset above is not tidy. We want to make sure to condense route variables to a single variable called route with the lines as entries under it. That is, to obtain a tidy dataset we would need to convert `route` variables from wide to long format. 
+
+The following code chunk selects station name and line, and then uses `distinct()` to obtain all unique combinations. As a result, the number of rows in this dataset is the number of unique stations.
+
+```{r}
+trans_ent %>% 
+  select(station_name, line) %>% 
+  distinct
+```
+- Therefore, there are 84 distinct stations. 
+
+The next code chunk is similar, but filters according to ADA compliance as an initial step. This produces a dataframe in which the number of rows is the number of ADA compliant stations. 
+
+```{r}
+trans_ent %>% 
+  filter(ada == TRUE) %>% 
+  select(station_name, line) %>% 
+  distinct
+```
+- Therefore, the number of stations that are ADA complian are 84. 
+
+To compute the proportion of station entrances / exits without vending allow entrance, we first exclude station entrances that do not allow vending. Then, we focus on the `entry` variable -- this logical, so taking the mean will produce the desired proportion (recall that R will coerce logical to numeric in cases like this).
+
+```{r}
+trans_ent %>% 
+  filter(vending == "NO") %>% 
+  pull(entry) %>% 
+  mean
+```
+
+- Therefore, the proportion of station entrances / exits without vending allow entrance is 0.377. 
+
+Lastly, we write a code chunk to identify stations that serve the A train, and to assess how many of these are ADA compliant. As a first step, we tidy the data as alluded to previously; that is, we convert `route` from wide to long format. After this step, we can use tools from previous parts of the question (filtering to focus on the A train, and on ADA compliance; selecting and using `distinct` to obtain dataframes with the required stations in rows).
+
+```{r}
+trans_ent %>% 
+  pivot_longer(
+    route1:route11,
+    names_to = "route_num",
+    values_to = "route") %>% 
+  filter(route == "A") %>% 
+  select(station_name, line) %>% 
+  distinct
+
+trans_ent %>% 
+  pivot_longer(
+    route1:route11,
+    names_to = "route_num",
+    values_to = "route") %>% 
+  filter(route == "A", ada == TRUE) %>% 
+  select(station_name, line) %>% 
+  distinct
+```
+
+- Therefore, 60 distinct stations serve the A train and 17 among these are ADA compliant as well. 
+
 # Problem 2
 
 We want to read and clean the Mr. Trash Wheel dataset:  
