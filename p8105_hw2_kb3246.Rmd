@@ -52,7 +52,7 @@ trans_ent %>%
   select(station_name, line) %>% 
   distinct
 ```
-- Therefore, there are 84 distinct stations. 
+- Therefore, there are 465 distinct stations. 
 
 ### To obtain number of ADA compliant stations
 
@@ -149,3 +149,33 @@ Here is a description of my combined dataset:
 - The total number of sports balls collected by Mr. Trash Wheel in 2020 was `r sum(combined_trash_wheel[which(combined_trash_wheel$year =="2020" & combined_trash_wheel$wheel =="mr"), "sports_balls"])`
 
 # Problem 3
+
+### `pols-mont.csv`: Cleaning the dataset, mutating and dropping variables 
+
+```{r pols-month}
+pols_month = read_csv("data/fivethirtyeight_datasets/pols-month.csv") %>%
+  janitor::clean_names() %>%
+  separate(mon, into = c("year", "month", "day"), sep = "-", convert = TRUE) %>%
+    mutate(month = month.abb[month], 
+           president = case_when(prez_gop==1 ~ "gop", 
+                                 prez_dem ==1 ~ "dem")
+             )%>%
+  select(-prez_dem, -prez_gop, -day)
+```
+
+### `snp.csv`: Cleaning the dataset, mutating and dropping variables 
+
+```{r snp}
+snp = read_csv("data/fivethirtyeight_datasets/snp.csv") %>%
+  janitor::clean_names() %>%
+  separate(date, into = c("month", "day", "year"), sep = "/", convert = TRUE)%>%
+  mutate(month = month.abb[month], 
+         year = case_when( year<16 ~ paste0("20", year), 
+                           year >16 ~ paste0("19", year)
+    
+  )
+           ) %>%
+  relocate(year)
+```
+
+
