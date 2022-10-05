@@ -220,6 +220,8 @@ This is the `pols_month` dataset:
 
 - The `prez_gop` and `prez_dem` variables indicated whether the president for that date was republican or democratic. 
 
+#### `snp` dataset: 
+
 This is the `snp` dataset: 
 
 `r skim(snp)`
@@ -227,6 +229,8 @@ This is the `snp` dataset:
 - It has `r nrow(snp)` observations and `r ncol(snp)` variables. 
 
 - It gives us information on the closing values for the stock index during the corresponding date (years included were 1950-2015). 
+
+#### `unemployment` dataset: 
 
 This is the `unemployment` dataset:
 
