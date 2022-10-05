@@ -220,7 +220,7 @@ This is the `pols_month` dataset:
 
 - It has `r nrow(pols_month)` observations and `r ncol(pols_month)` variables. 
 
-- It gives us information on the number of politicians that are either republican or democratic during a given point in time (years included were 1947-2015)
+- It gives us information on the number of politicians that are either republican or democratic during a given point in time (years included were `r min(pols_month$year)` to `r max(pols_month$year)`
 
 - The `prez_gop` and `prez_dem` variables indicated whether the president for that date was republican or democratic. 
 
@@ -232,7 +232,7 @@ This is the `snp` dataset:
 
 - It has `r nrow(snp)` observations and `r ncol(snp)` variables. 
 
-- It gives us information on the closing values for the stock index during the corresponding date (years included were 1950-2015). 
+- It gives us information on the closing values for the stock index during the corresponding date (years included were `r min(snp$year)` to `r max(snp$year)`). 
 
 #### `unemployment` dataset: 
 
@@ -242,7 +242,7 @@ This is the `unemployment` dataset:
 
 - It has `r nrow(unemployment)` observations and `r ncol(unemployment)` variables. 
 
-- It gives us information on the percent of individuals unemployed at the corresponding time-period (year included were 1948-2015). 
+- It gives us information on the percent of individuals unemployed at the corresponding time-period (year included were `r min(unemployment$year)` to `r max(unemployment$year)`). 
 
 ### Summary of merged dataset
 
@@ -252,5 +252,5 @@ This is the `merged_data` dataset:
 
 - It has `r nrow(merged_data)` observations and `r ncol(merged_data)` variables. 
 
-- Some of the key variables included in this dataset are whether a certain president was a democrat or a republican, the closing stock index price and the percent unemployed during a specific time point (years included were 1947 to 2015). 
+- Some of the key variables included in this dataset are whether a certain president was a democrat or a republican, the closing stock index price and the percent unemployed during a specific time point (years included were `r min(merged_data$year)` to `r max(merged_data$year)`). 
 
