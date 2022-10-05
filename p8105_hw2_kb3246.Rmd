@@ -181,7 +181,7 @@ snp = read_csv("data/fivethirtyeight_datasets/snp.csv") %>%
 
 ### `unemployment.csv`: Cleaning the dataset, mutating and dropping variables
 
-```{r}
+```{r unemployment}
 unemployment = read_csv("data/fivethirtyeight_datasets/unemployment.csv") %>%
   janitor::clean_names() %>%
   pivot_longer(
@@ -194,14 +194,14 @@ unemployment = read_csv("data/fivethirtyeight_datasets/unemployment.csv") %>%
 
 First we merge the `pols_month.csv` and `snp.csv` using a left join. 
 
-```{r}
+```{r merge1}
 pols_snp = 
   left_join(pols_month, snp)
 ```
 
 Now we add `unemployemtn.csv` to the above dataset using a left join. 
 
-```{r}
+```{r final merge}
 merged_data = 
   left_join(pols_snp, unemployment)
 ```
