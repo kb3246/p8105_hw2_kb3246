@@ -79,7 +79,7 @@ trans_ent %>%
 
 - Therefore, the proportion of station entrances / exits without vending allow entrance is 0.377. 
 
-### A tratin stations that are ADA compliant 
+### A train stations that are ADA compliant 
 
 Lastly, we write a code chunk to identify stations that serve the A train, and to assess how many of these are ADA compliant. As a first step, we tidy the data as alluded to previously; that is, we convert `route` from wide to long format. After this step, we can use tools from previous parts of the question (filtering to focus on the A train, and on ADA compliance; selecting and using `distinct` to obtain dataframes with the required stations in rows).
 
@@ -170,12 +170,79 @@ snp = read_csv("data/fivethirtyeight_datasets/snp.csv") %>%
   janitor::clean_names() %>%
   separate(date, into = c("month", "day", "year"), sep = "/", convert = TRUE)%>%
   mutate(month = month.abb[month], 
-         year = case_when( year<16 ~ paste0("20", year), 
-                           year >16 ~ paste0("19", year)
+         year = case_when( year<16 ~  year+2000, 
+                           year >16 ~ year+1900
     
   )
            ) %>%
-  relocate(year)
+  relocate(year) %>%
+  select( -day)
 ```
 
+### `unemployment.csv`: Cleaning the dataset, mutating and dropping variables
+
+```{r}
+unemployment = read_csv("data/fivethirtyeight_datasets/unemployment.csv") %>%
+  janitor::clean_names() %>%
+  pivot_longer(
+    jan:dec,
+    names_to = "month", 
+    values_to = "unemployment")
+```
+
+### Merging the datasets
+
+First we merge the `pols_month.csv` and `snp.csv` using a left join. 
+
+```{r}
+pols_snp = 
+  left_join(pols_month, snp)
+```
+
+Now we add `unemployemtn.csv` to the above dataset using a left join. 
+
+```{r}
+merged_data = 
+  left_join(pols_snp, unemployment)
+```
+
+### Summary of the individual datasets
+
+#### `pols_month` dataset: 
+
+This is the `pols_month` dataset: 
+
+`r skim(pols_month)`
+
+- It has `r nrow(pols_month)` observations and `r ncol(pols_month)` variables. 
+
+- It gives us information on the number of politicians that are either republican or democratic during a given point in time (years included were 1947-2015)
+
+- The `prez_gop` and `prez_dem` variables indicated whether the president for that date was republican or democratic. 
+
+This is the `snp` dataset: 
+
+`r skim(snp)`
+
+- It has `r nrow(snp)` observations and `r ncol(snp)` variables. 
+
+- It gives us information on the closing values for the stock index during the corresponding date (years included were 1950-2015). 
+
+This is the `unemployment` dataset:
+
+`r skim(unemployment)`
+
+- It has `r nrow(unemployment)` observations and `r ncol(unemployment)` variables. 
+
+- It gives us information on the percent of individuals unemployed at the corresponding time-period (year included were 1948-2015). 
+
+### Summary of merged dataset
+
+This is the `merged_data` dataset: 
+
+`r skim(merged_data)`
+
+- It has `r nrow(merged_data)` observations and `r ncol(merged_data)` variables. 
+
+- Some of the key variables included in this dataset are whether a certain president was a democrat or a republican, the closing stock index price and the percent unemployed during a specific time point (years included were 1947 to 2015). 
 
