@@ -113,6 +113,7 @@ We want to read and clean the Mr. Trash Wheel dataset:
 ```{r Mr. Trash Wheel}
 mr_trash_wheel = read_excel("Data/Trash Wheel Collection Data.xlsx", sheet = 1, range = "A2:N549") %>%
   janitor::clean_names()%>%
+  drop_na(dumpster) %>%
   mutate(sports_balls = as.integer(sports_balls), wheel = "mr")
 ```
 
@@ -123,6 +124,7 @@ We want to read and clean the Prof. Trash Wheel dataset:
 ```{r Prof. Trash Wheel}
 prof_trash_wheel = read_excel("Data/Trash Wheel Collection Data.xlsx", sheet = 2, range = "A2:M96") %>%
   janitor::clean_names()%>%
+  drop_na(dumpster) %>%
   mutate(year = as.character(year), wheel = "prof")
 ```
 
