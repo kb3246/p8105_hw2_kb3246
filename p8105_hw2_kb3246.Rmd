@@ -163,6 +163,8 @@ pols_month = read_csv("data/fivethirtyeight_datasets/pols-month.csv") %>%
   select(-prez_dem, -prez_gop, -day)
 ```
 
+I want to mention here, that while `prez_gop` is meant to be a binary variable, there were some 2s found in the dataset. I do not know the possible explanation for this, but this is something to note. 
+
 ### `snp.csv`: Cleaning the dataset, mutating and dropping variables 
 
 ```{r snp}
